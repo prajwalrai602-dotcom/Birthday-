@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>For My Love ❤️</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap');
+
+    body {
+      margin: 0;
+      height: 100vh;
+      background: linear-gradient(45deg, #ff9a9e, #fad0c4);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Dancing Script', cursive;
+      overflow: hidden;
+      color: white;
+      text-align: center;
+    }
+
+    #startScreen {
+      text-align: center;
+    }
+
+    .start-btn {
+      padding: 20px 40px;
+      font-size: 28px;
+      background: #ff1493;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      box-shadow: 0 10px 30px rgba(255, 20, 147, 0.5);
+      font-family: 'Dancing Script', cursive;
+      margin-top: 20px;
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+    .start-btn:hover {
+      transform: scale(1.1);
+    }
+
+    .heart {
+      font-size: 120px;
+      animation: pulse 1.2s infinite;
+      opacity: 0;
+      transition: opacity 1s;
+      margin-bottom: 20px;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.18); }
+      100% { transform: scale(1); }
+    }
+
+    .text {
+      font-size: 28px;
+      font-weight: bold;
+      max-width: 90%;
+      line-height: 1.5;
+      white-space: pre-line;
+      margin: 20px;
+      opacity: 0;
+      transition: opacity 1s;
+    }
+
+    .video-container {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .replay-btn {
+      padding: 15px 30px;
+      font-size: 22px;
+      background: #ff1493;
+      color: white;
+      border: none;
+      border-radius: 40px;
+      margin-top: 20px;
+      cursor: pointer;
+      font-family: 'Dancing Script', cursive;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="startScreen">
+    <h1 style="font-size: 48px; margin-bottom: 40px;">❤️ For My Love ❤️</h1>
+    <button class="start-btn" id="startBtn">Tap to Start</button>
+  </div>
+
+  <div id="heart" class="heart">❤️</div>
+  <div id="message" class="text"></div>
+
+  <audio id="audio" src="love.mp3"></audio>
+
+  <script>
+    const heart = document.getElementById('heart');
+    const message = document.getElementById('message');
+    const audio = document.getElementById('audio');
+    const startBtn = document.getElementById('startBtn');
+    const startScreen = document.getElementById('startScreen');
+
+    const fullText = "Happy Birthday my beautiful love ❤️\n\nYou make every day brighter.\nYou're my best friend and my everything.\nThank you for all the love and smiles.\nI love you so much today and forever 💕";
+
+    let index = 0;
+    const textDuration = 13000; // 13 seconds
+    const audioDuration = 14000; // 14 seconds
+    const typingSpeed = Math.floor(textDuration / fullText.length);
+
+    startBtn.addEventListener("click", startSequence);
+
+    function startSequence() {
+      startScreen.style.display = "none";
+      message.innerHTML = "";
+      index = 0;
+
+      // Fade in heart
+      heart.style.opacity = "1";
+
+      audio.currentTime = 0;
+      audio.play();
+
+      const typing = setInterval(() => {
+        if (index < fullText.length) {
+          message.style.opacity = "1";
+          message.innerHTML += fullText[index] === "\n" ? "<br>" : fullText[index];
+          index++;
+        } else {
+          clearInterval(typing);
+          setTimeout(() => audio.pause(), audioDuration);
+
+          // Fade out heart
+          heart.style.opacity = "0";
+          setTimeout(() => playVideo(), 1000);
+        }
+      }, typingSpeed);
+    }
+
+    function playVideo() {
+      const videoContainer = document.createElement('div');
+      videoContainer.className = "video-container";
+
+      const video = document.createElement('video');
+      video.src = "video.mp4";
+      video.controls = true;
+      video.autoplay = true;
+
+      videoContainer.appendChild(video);
+      document.body.appendChild(videoContainer);
+
+      video.onended = () => {
+        const replayBtn = document.createElement("button");
+        replayBtn.className = "replay-btn";
+        replayBtn.innerText = "🔁 Replay";
+        replayBtn.onclick = () => {
+          videoContainer.remove();
+          replayBtn.remove();
+          startScreen.style.display = "block";
+          heart.style.opacity = "0";
+          message.style.opacity = "0";
+        };
+        videoContainer.appendChild(replayBtn);
+      };
+    }
+  </script>
+</body>
+</html>
